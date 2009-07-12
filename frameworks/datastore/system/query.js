@@ -445,7 +445,8 @@ SC.Query = SC.Object.extend({
                           var actualType = SC.Store.recordTypeFor(r.storeKey);
                           var right      = this.rightSide.evaluate(r,w);
                           var expectType = SC.objectForPropertyPath(right);
-                          return actualType == expectType;
+                          console.log(expectType.toString()) ;
+                          return actualType == expectType; // TODO: this should use SC.instanceOf or SC.kindOf, not strict equality
                         }
     },
     'null': {
@@ -845,6 +846,10 @@ SC.Query.mixin( /** @scope SC.Query */ {
   containsStoreKeys: function(query, storeKeys, store) {
     var ret = [], idx, len, rec, status, K = SC.Record;
     var recType = query.get('recordType');
+    if (recType && SC.typeOf(recType) === SC.T_STRING) {
+      recType = SC.objectForPropertyPath(recType) ;
+      query.set('recordType', recType) ;
+    }
     // if storeKeys is not set, just get all storeKeys for this record type,
     // or all storeKeys in store if no record type is given
     if(!storeKeys) {

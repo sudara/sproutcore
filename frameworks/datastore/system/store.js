@@ -740,29 +740,28 @@ SC.Store = SC.Object.extend( /** @scope SC.Store.prototype */ {
       within a given record array
     @returns {SC.RecordArray} matching set or null if no server handled it
   */
-  findAll: function(fetchKey, params, recordArray) { 
+  findAll: function(fetchKey, params, recordArray) {
     var _store = this, source = this._getDataSource(), ret = [], storeKeys, 
-      sourceRet, cacheKey;
+      sourceRet, cacheKey ;
     
-    if(recordArray) {
+    if (recordArray) {
       // giving a recordArray will circumvent the data source
       // typically happens when chaining findAll statements
-      storeKeys = SC.Query.containsRecords(fetchKey, recordArray, _store);
+      storeKeys = SC.Query.containsRecords(fetchKey, recordArray, _store) ;
     }
     else if (source) {
-      // call fetch() on the data source.
-      sourceRet = source.fetch.call(source, this, fetchKey, params);
-      if(SC.typeOf(sourceRet)===SC.T_ARRAY) {
-        storeKeys = sourceRet;
+      sourceRet = source.fetch.call(source, this, fetchKey, params) ;
+      if (SC.typeOf(sourceRet)===SC.T_ARRAY) {
+        storeKeys = sourceRet ;
       }
     }
     
     // if SC.Query returned from data source or no data source was given 
-    if(!storeKeys && SC.instanceOf(fetchKey, SC.Query)) {
-      storeKeys = SC.Query.containsStoreKeys(fetchKey, null, _store);
+    if (!storeKeys && SC.instanceOf(fetchKey, SC.Query)) {
+      storeKeys = SC.Query.containsStoreKeys(fetchKey, null, _store) ;
     }
     
-    ret = this.recordArrayFromStoreKeys(storeKeys, fetchKey, _store);
+    ret = this.recordArrayFromStoreKeys(storeKeys, fetchKey, _store) ;
     return ret ;
   },
   
@@ -1824,9 +1823,15 @@ SC.Store = SC.Object.extend( /** @scope SC.Store.prototype */ {
   statusString: function(storeKey) {
     var rec = this.materializeRecord(storeKey);
     return rec.statusString();
+  },
+  
+  query: function(hash) {
+    var SCQuery = this._SC_Query ;
+    if (!SCQuery) SCQuery = this._SC_Query = SC.Query ;
+    return this.findAll(SCQuery.create(hash)) ;
   }
   
-}) ;
+});
 
 SC.Store.mixin({
   
